@@ -39,6 +39,8 @@ void	receive_str(int sig)
 		free(r.str);
 		r.str = NULL;
 	}
+	usleep(100);
+	kill(ft_atoi(r.client_pid), SIGUSR2);
 }
 
 void	receive_pid(void)
@@ -64,10 +66,10 @@ int	main(void)
 	{
 		receive_pid();
 		receive_message();
+		usleep(500);
+		kill(ft_atoi(r.client_pid), SIGUSR1);
 		r.pid_received = 0;
 		r.msg_received = 0;
-		usleep(500);
-		send_bit(ft_atoi(r.client_pid), 1);
 		free(r.client_pid);
 		r.client_pid = NULL;
 	}

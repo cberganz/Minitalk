@@ -33,7 +33,6 @@ SRC_C			= client.c			\
 
 SRC_S_BONUS		= server_bonus.c	\
 				  receive_bonus.c	\
-				  send_bonus.c		\
 				  utils_bonus.c
 
 SRC_C_BONUS		= client_bonus.c	\

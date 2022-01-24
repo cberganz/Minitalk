@@ -9,7 +9,7 @@ void	send_bit(int pid, uint8_t bit)
 	usleep(100);
 }
 
-void	send_char(int pid, char c)
+void	send_char(t_send *send, int pid, char c, int wait)
 {
 	int	bit;
 
@@ -18,17 +18,22 @@ void	send_char(int pid, char c)
 	{
 		send_bit(pid, c & (1 << bit));
 		bit++;
+		if (wait == TRUE)
+		{
+			wait_for_confirm();
+			send->confirm_bit_received = 0;
+		}
 	}
 }
 
-void	send_message(t_send send)
+void	send_message(t_send send, int wait)
 {
 	while (*send.str)
 	{
-		send_char(send.pid, *send.str);
-		if (*(send.str + 1))
-			send_bit(send.pid, 0);
+		send_char(&send, send.pid, *send.str, wait);
 		send.str++;
+		if (*send.str)
+			send_bit(send.pid, 0);
 	}
 	send_bit(send.pid, 1);
 }

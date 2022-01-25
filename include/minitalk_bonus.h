@@ -31,7 +31,7 @@ typedef struct	s_receive
 
 void			send_bit(int pid, uint8_t bit);
 void			send_char(t_send *send, int pid, char c, int wait);
-void			send_message(t_send send, int wait);
+void			send_message(t_send *send, int wait);
 uint8_t			read_bit(int sig);
 uint8_t			receive_char(t_receive *r);
 void			receive_str(int sig);

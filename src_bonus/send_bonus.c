@@ -6,7 +6,7 @@ void	send_bit(int pid, uint8_t bit)
 		kill(pid, SIGUSR1);
 	else
 		kill(pid, SIGUSR2);
-	usleep(100);
+	usleep(50);
 }
 
 void	send_char(t_send *send, int pid, char c, int wait)
@@ -26,14 +26,24 @@ void	send_char(t_send *send, int pid, char c, int wait)
 	}
 }
 
-void	send_message(t_send send, int wait)
+void	send_message(t_send *send, int wait)
 {
-	while (*send.str)
+	int	i;
+
+	i = 0;
+	while (send->str[i])
 	{
-		send_char(&send, send.pid, *send.str, wait);
-		send.str++;
-		if (*send.str)
-			send_bit(send.pid, 0);
+		send_char(send, send->pid, send->str[i], wait);
+		i++;
+		if (send->str[i])
+		{
+			send_bit(send->pid, 0);
+			if (wait == TRUE)
+			{
+				wait_for_confirm();
+				send->confirm_bit_received = 0;
+			}
+		}
 	}
-	send_bit(send.pid, 1);
+	send_bit(send->pid, 1);
 }

@@ -64,21 +64,21 @@ all: $(NAME_SERVER) $(NAME_CLIENT)
 
 $(NAME_SERVER): $(OBJ_SERVER)
 	@make -sC ./libft/
-	$(CC) $(CFLAGS) -L./libft $(OBJ_SERVER) -lft -o $(NAME_SERVER)
+	$(CC) $(CFLAGS) -L./libft $(OBJ_SERVER) -lft -o $(NAME_SERVER) -g3
 
 $(NAME_CLIENT): $(OBJ_CLIENT)
 	@make -sC ./libft/
-	$(CC) $(CFLAGS) -L./libft $(OBJ_CLIENT) -lft -o $(NAME_CLIENT)
+	$(CC) $(CFLAGS) -L./libft $(OBJ_CLIENT) -lft -o $(NAME_CLIENT) -g3
 
 bonus: $(NAME_SERVER_B) $(NAME_CLIENT_B)
 
 $(NAME_SERVER_B): $(OBJ_BONUS_SERVER)
 	@make -sC ./libft/
-	$(CC) $(CFLAGS) -L./libft $(OBJ_BONUS_SERVER) -lft -o $(NAME_SERVER_B)
+	$(CC) $(CFLAGS) -L./libft $(OBJ_BONUS_SERVER) -lft -o $(NAME_SERVER_B) -g3
 
 $(NAME_CLIENT_B): $(OBJ_BONUS_CLIENT)
 	@make -sC ./libft/
-	$(CC) $(CFLAGS) -L./libft $(OBJ_BONUS_CLIENT) -lft -o $(NAME_CLIENT_B)
+	$(CC) $(CFLAGS) -L./libft $(OBJ_BONUS_CLIENT) -lft -o $(NAME_CLIENT_B) -g3
 
 $(OBJ_DIRS):
 	mkdir -p $@
@@ -90,10 +90,10 @@ $(OBJ_SERVER): | $(OBJ_DIRS)
 $(OBJ_BONUS_SERVER): | $(OBJ_BONUS_DIRS)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
-	$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $@
+	$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $@ -g3
 
 $(OBJ_BONUS_DIR)%.o: $(SRC_BONUS_DIR)%.c $(HEADER)
-	$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $@
+	$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $@ -g3
 
 clean:
 	@make clean -sC ./libft/

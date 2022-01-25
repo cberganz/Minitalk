@@ -66,8 +66,6 @@ int	main(void)
 	{
 		receive_pid();
 		receive_message();
-		usleep(500);
-		kill(ft_atoi(r.client_pid), SIGUSR1);
 		r.pid_received = 0;
 		r.msg_received = 0;
 		free(r.client_pid);

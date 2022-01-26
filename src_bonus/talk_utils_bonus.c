@@ -1,14 +1,38 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   talk_utils_bonus.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cberganz <cberganz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/26 13:06:59 by cberganz          #+#    #+#             */
+/*   Updated: 2022/01/26 14:17:40 by cberganz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minitalk_bonus.h"
 
-void	wait_and_execute(int sig, t_talk *talk, void (*ft)(int))
+int8_t	wait_and_execute(int sig, t_talk *talk, void (*ft)(int))
 {
+	int	i;
+
+	i = 0;
 	if (sig == BIT_0 || sig == BIT_0 + BIT_1)
 		signal(BIT_0, ft);
 	if (sig == BIT_1 || sig == BIT_0 + BIT_1)
 		signal(BIT_1, ft);
-	while (talk->confirm == 0)
+	while (talk->confirm == 0 && i < 1000)
+	{
 		pause();
-	talk->confirm = 0;
+		i++;
+	}
+	if (talk->confirm == 1)
+	{
+		talk->confirm = 0;
+		return (SUCCESS);
+	}
+	else
+		return (ERROR);
 }
 
 void	show_pid(void)

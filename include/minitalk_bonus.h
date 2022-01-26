@@ -7,6 +7,8 @@
 
 # define TRUE 1
 # define FALSE 0
+# define SUCCESS 0
+# define ERROR 1
 # define BIT_0 SIGUSR1
 # define BIT_1 SIGUSR2
 # define CONFIRM SIGUSR2
@@ -25,6 +27,6 @@ typedef struct	s_talk
 
 void			ft_join_free(t_talk *talk);
 void			show_pid(void);
-void			wait_and_execute(int sig, t_talk *talk, void (*ft)(int));
+int8_t			wait_and_execute(int sig, t_talk *talk, void (*ft)(int));
 
 #endif

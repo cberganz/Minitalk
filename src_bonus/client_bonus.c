@@ -1,14 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cberganz <cberganz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/26 13:06:42 by cberganz          #+#    #+#             */
+/*   Updated: 2022/01/26 14:17:39 by cberganz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minitalk_bonus.h"
 
-t_talk	talk;
+t_talk	g_talk;
 
 static void	receive_bit_confirm(int sig)
 {
-	talk.confirm = 1;
+	g_talk.confirm = 1;
 	(void)sig;
 }
 
-static void	send_char(t_talk *talk, int pid, char c, int wait)
+static void	send_char(int pid, char c, int wait)
 {
 	int	bit;
 
@@ -19,48 +31,61 @@ static void	send_char(t_talk *talk, int pid, char c, int wait)
 			kill(pid, BIT_0);
 		else
 			kill(pid, BIT_1);
-		usleep(50);
+		usleep(200);
 		bit++;
 		if (wait == TRUE)
-			wait_and_execute(CONFIRM, talk, receive_bit_confirm);
+		{
+			if (wait_and_execute(CONFIRM, &g_talk, receive_bit_confirm))
+			{
+				ft_putstr_fd("\nError while sending message. Please try again.\n\n", 1);
+				exit (EXIT_FAILURE);
+			}
+		}
 	}
 }
 
-static void	send_message(t_talk *talk, int wait)
+static void	send_message(char *str, int server_pid, int wait)
 {
 	int	i;
 
 	i = 0;
-	while (talk->str[i])
+	while (str[i])
 	{
-		send_char(talk, talk->server_pid, talk->str[i], wait);
+		send_char(server_pid, str[i], wait);
 		i++;
-		if (talk->str[i])
+		if (str[i])
 		{
-			kill(talk->server_pid, GO_TO_NEXT_CHAR);
+			kill(server_pid, GO_TO_NEXT_CHAR);
 			if (wait == TRUE)
-				wait_and_execute(CONFIRM, talk, receive_bit_confirm);
+			{
+				if (wait_and_execute(CONFIRM, &g_talk, receive_bit_confirm))
+				{
+					ft_putstr_fd("\nError while sending message. Please try again.\n\n", 1);
+					exit (EXIT_FAILURE);
+				}
+			}
 			else
-				usleep(50);
+				usleep(200);
 		}
 	}
-	kill(talk->server_pid, END_OF_MESSAGE);
-	usleep(50);
+	kill(server_pid, END_OF_MESSAGE);
+	usleep(200);
 }
 
 static void	send_pid(int pid)
 {
-	t_talk	send_pid;
+	char	*str;
+	int		server_pid;
 
-	send_pid.server_pid = pid;
-	send_pid.str = ft_itoa(getpid());
-	if (!send_pid.str)
+	server_pid = pid;
+	str = ft_itoa(getpid());
+	if (!str)
 	{
 		ft_putendl_fd("Error at send_pid().", 2);
 		exit(EXIT_FAILURE);
 	}
-	send_message(&send_pid, FALSE);
-	free(send_pid.str);
+	send_message(str, server_pid, FALSE);
+	free(str);
 }
 
 int	main(int argc, char *argv[])
@@ -70,10 +95,10 @@ int	main(int argc, char *argv[])
 		ft_putendl_fd("Usage : ./client [pid] [Message]", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
-	talk.server_pid = ft_atoi(argv[1]);
-	talk.str = argv[2];
-	send_pid(talk.server_pid);
-	send_message(&talk, TRUE);
+	g_talk.server_pid = ft_atoi(argv[1]);
+	g_talk.str = argv[2];
+	send_pid(g_talk.server_pid);
+	send_message(g_talk.str, g_talk.server_pid, TRUE);
 	ft_putendl_fd("Message sent.", 1);
 	return (EXIT_SUCCESS);
 }

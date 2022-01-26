@@ -32,11 +32,10 @@ SRC_C			= client.c			\
 				  send.c
 
 SRC_S_BONUS		= server_bonus.c	\
-				  receive_bonus.c	\
-				  utils_bonus.c
+				  talk_utils_bonus.c
 
 SRC_C_BONUS		= client_bonus.c	\
-				  send_bonus.c
+				  talk_utils_bonus.c
 
 SRC_DIR			= src/
 SRC_SERVER		= $(addprefix $(SRC_DIR), $(SRC_S))

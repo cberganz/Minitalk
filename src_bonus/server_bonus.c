@@ -1,62 +1,64 @@
 #include "minitalk_bonus.h"
 
-static t_receive	r;
+static t_talk	talk;
 
-void	receive_id(int sig)
+static uint8_t receive_char(t_talk *talk)
+{
+	static int	bit;
+	
+	if (bit < 8 && talk->sig == BIT_1)
+		talk->c |= 1 << bit;	
+	bit++;
+	if (bit == 9)
+	{
+		bit = 0;
+		if (talk->sig == END_OF_MESSAGE)
+			return (2);
+		return (1);
+	}
+	return (0);
+}
+
+static void	receive_id(int sig)
 {
 	uint8_t				ret;
 
-	r.sig = sig;
-	ret = receive_char(&r);
+	talk.sig = sig;
+	ret = receive_char(&talk);
 	if (ret >= 1)
 	{
-		ft_join_free(&r);
-		r.c = 0;
+		ft_join_free(&talk);
+		talk.c = 0;
 	}
 	if (ret == 2)
 	{
-		r.client_pid = r.str;
-		r.str = NULL;
-		r.pid_received = 1;
+		talk.client_pid = ft_atoi(talk.str);
+		free(talk.str);
+		talk.str = NULL;
+		talk.confirm = 1;
 	}
 }
 
-void	receive_str(int sig)
+static void	receive_str(int sig)
 {
 	uint8_t				ret;
 
-	r.sig = sig;
-	ret = receive_char(&r);
+	talk.sig = sig;
+	ret = receive_char(&talk);
 	if (ret >= 1)
 	{
-		ft_join_free(&r);
-		r.c = 0;
+		ft_join_free(&talk);
+		talk.c = 0;
 	}
 	if (ret == 2)
 	{
-		ft_putendl_fd(r.str, STDOUT_FILENO);
-		r.msg_received = 1;
-		free(r.str);
-		r.str = NULL;
+		ft_putendl_fd(talk.str, STDOUT_FILENO);
+		talk.confirm = 1;
+		free(talk.str);
+		talk.str = NULL;
 	}
 	usleep(100);
-	kill(ft_atoi(r.client_pid), SIGUSR2);
-}
-
-void	receive_pid(void)
-{
-	signal(SIGUSR1, receive_id);
-	signal(SIGUSR2, receive_id);
-	while (r.pid_received == 0)
-		pause();
-}
-
-void	receive_message(void)
-{
-	signal(SIGUSR1, receive_str);
-	signal(SIGUSR2, receive_str);
-	while (r.msg_received == 0)
-		pause();
+	kill(talk.client_pid, CONFIRM);
 }
 
 int	main(void)
@@ -64,12 +66,11 @@ int	main(void)
 	show_pid();
 	while (1)
 	{
-		receive_pid();
-		receive_message();
-		r.pid_received = 0;
-		r.msg_received = 0;
-		free(r.client_pid);
-		r.client_pid = NULL;
+		wait_and_execute(BIT_0 + BIT_1, &talk, receive_id);
+		ft_putstr_fd("From client ", 1);
+		ft_putnbr_fd(talk.client_pid, 1);
+		ft_putstr_fd(" : ", 1);
+		wait_and_execute(BIT_0 + BIT_1, &talk, receive_str);
 	}
 	return (EXIT_SUCCESS);
 }

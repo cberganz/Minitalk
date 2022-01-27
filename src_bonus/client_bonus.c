@@ -31,7 +31,8 @@ static void	send_char(int pid, char c, int wait)
 			kill(pid, BIT_0);
 		else
 			kill(pid, BIT_1);
-		usleep(200);
+		if (wait == FALSE)
+			usleep(200);
 		bit++;
 		if (wait == TRUE)
 		{
@@ -56,6 +57,7 @@ static void	send_message(char *str, int server_pid, int wait)
 		if (str[i])
 		{
 			kill(server_pid, GO_TO_NEXT_CHAR);
+			usleep(100);
 			if (wait == TRUE)
 			{
 				if (wait_and_execute(CONFIRM, &g_talk, receive_bit_confirm))
@@ -72,19 +74,17 @@ static void	send_message(char *str, int server_pid, int wait)
 	usleep(200);
 }
 
-static void	send_pid(int pid)
+static void	send_pid(void)
 {
 	char	*str;
-	int		server_pid;
 
-	server_pid = pid;
 	str = ft_itoa(getpid());
 	if (!str)
 	{
 		ft_putendl_fd("Error at send_pid().", 2);
 		exit(EXIT_FAILURE);
 	}
-	send_message(str, server_pid, FALSE);
+	send_message(str, g_talk.server_pid, FALSE);
 	free(str);
 }
 
@@ -97,7 +97,7 @@ int	main(int argc, char *argv[])
 	}
 	g_talk.server_pid = ft_atoi(argv[1]);
 	g_talk.str = argv[2];
-	send_pid(g_talk.server_pid);
+	send_pid();
 	send_message(g_talk.str, g_talk.server_pid, TRUE);
 	ft_putendl_fd("Message sent.", 1);
 	return (EXIT_SUCCESS);

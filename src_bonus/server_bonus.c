@@ -80,7 +80,7 @@ int	main(void)
 	{
 		if (wait_and_execute(BIT_0 + BIT_1, &g_talk, receive_id))
 		{
-			ft_putstr_fd("\nError while receiving client PID. Server restarted.\n\n", 1);
+			ft_putstr_fd("\nError while receiving client PID. Server reloaded.\n\n", 1);
 			show_pid();
 			continue ;
 		}
@@ -89,10 +89,11 @@ int	main(void)
 		ft_putstr_fd(" : ", 1);
 		if (wait_and_execute(BIT_0 + BIT_1, &g_talk, receive_str))
 		{
-			ft_putstr_fd("\nError while receiving message. Server restarted.\n\n", 1);
+			ft_putstr_fd("\nError while receiving message. Server reloaded.\n\n", 1);
 			show_pid();
 			continue ;
 		}
+		ft_putendl_fd("", 1);
 	}
 	return (EXIT_SUCCESS);
 }

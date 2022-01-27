@@ -14,18 +14,12 @@
 
 int8_t	wait_and_execute(int sig, t_talk *talk, void (*ft)(int))
 {
-	int	i;
-
-	i = 0;
 	if (sig == BIT_0 || sig == BIT_0 + BIT_1)
 		signal(BIT_0, ft);
 	if (sig == BIT_1 || sig == BIT_0 + BIT_1)
 		signal(BIT_1, ft);
-	while (talk->confirm == 0 && i < 1000)
-	{
+	while (talk->confirm == 0)
 		pause();
-		i++;
-	}
 	if (talk->confirm == 1)
 	{
 		talk->confirm = 0;
@@ -47,6 +41,7 @@ void	show_pid(void)
 	}
 	ft_putstr_fd("Pid : ", 1);
 	ft_putendl_fd(pid_to_str, 1);
+	ft_putendl_fd("", 1);
 	free(pid_to_str);
 }
 

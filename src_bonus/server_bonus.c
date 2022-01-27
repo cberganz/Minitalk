@@ -6,7 +6,7 @@
 /*   By: cberganz <cberganz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 13:06:52 by cberganz          #+#    #+#             */
-/*   Updated: 2022/01/26 14:17:41 by cberganz         ###   ########.fr       */
+/*   Updated: 2022/01/27 19:38:41 by cberganz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,22 +78,12 @@ int	main(void)
 	show_pid();
 	while (1)
 	{
-		if (wait_and_execute(BIT_0 + BIT_1, &g_talk, receive_id))
-		{
-			ft_putstr_fd("\nError while receiving client PID. Server reloaded.\n\n", 1);
-			show_pid();
-			continue ;
-		}
-		ft_putstr_fd("From client ", 1);
-		ft_putnbr_fd(g_talk.client_pid, 1);
-		ft_putstr_fd(" : ", 1);
-		if (wait_and_execute(BIT_0 + BIT_1, &g_talk, receive_str))
-		{
-			ft_putstr_fd("\nError while receiving message. Server reloaded.\n\n", 1);
-			show_pid();
-			continue ;
-		}
-		ft_putendl_fd("", 1);
+		wait_and_execute(BIT_0 + BIT_1, &g_talk, receive_id);
+		ft_putstr_fd("From client ", STDOUT_FILENO);
+		ft_putnbr_fd(g_talk.client_pid, STDOUT_FILENO);
+		ft_putstr_fd(" : ", STDOUT_FILENO);
+		wait_and_execute(BIT_0 + BIT_1, &g_talk, receive_str);
+		ft_putendl_fd("", STDOUT_FILENO);
 	}
 	return (EXIT_SUCCESS);
 }

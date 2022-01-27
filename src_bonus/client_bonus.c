@@ -6,7 +6,7 @@
 /*   By: cberganz <cberganz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 13:06:42 by cberganz          #+#    #+#             */
-/*   Updated: 2022/01/26 14:17:39 by cberganz         ###   ########.fr       */
+/*   Updated: 2022/01/27 20:39:33 by cberganz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,10 @@ static void	send_char(int pid, char c, int wait)
 		else
 			kill(pid, BIT_1);
 		if (wait == FALSE)
-			usleep(200);
+			usleep(2000);
 		bit++;
 		if (wait == TRUE)
-		{
-			if (wait_and_execute(CONFIRM, &g_talk, receive_bit_confirm))
-			{
-				ft_putstr_fd("\nError while sending message. Please try again.\n\n", 1);
-				exit (EXIT_FAILURE);
-			}
-		}
+			wait_and_execute(CONFIRM, &g_talk, receive_bit_confirm);
 	}
 }
 
@@ -57,19 +51,13 @@ static void	send_message(char *str, int server_pid, int wait)
 		if (str[i])
 		{
 			kill(server_pid, GO_TO_NEXT_CHAR);
-			usleep(100);
 			if (wait == TRUE)
-			{
-				if (wait_and_execute(CONFIRM, &g_talk, receive_bit_confirm))
-				{
-					ft_putstr_fd("\nError while sending message. Please try again.\n\n", 1);
-					exit (EXIT_FAILURE);
-				}
-			}
+				wait_and_execute(CONFIRM, &g_talk, receive_bit_confirm);
 			else
-				usleep(200);
+				usleep(2000);
 		}
 	}
+	usleep(200);
 	kill(server_pid, END_OF_MESSAGE);
 	usleep(200);
 }
@@ -95,10 +83,22 @@ int	main(int argc, char *argv[])
 		ft_putendl_fd("Usage : ./client [pid] [Message]", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
+	if (argv[2][0] == '\0')
+	{
+		ft_putendl_fd("Error.\nYour message is empty.", STDERR_FILENO);
+		return (EXIT_FAILURE);
+	}
+	if (pid_is_not_natural(argv[1]))
+	{
+		ft_putendl_fd("Error.\nPid is not natural.", STDERR_FILENO);
+		return (EXIT_FAILURE);
+	}
 	g_talk.server_pid = ft_atoi(argv[1]);
 	g_talk.str = argv[2];
+	usleep(500);
 	send_pid();
+	usleep(500);
 	send_message(g_talk.str, g_talk.server_pid, TRUE);
-	ft_putendl_fd("Message sent.", 1);
+	ft_putendl_fd("Message received by server.", 1);
 	return (EXIT_SUCCESS);
 }

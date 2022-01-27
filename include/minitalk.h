@@ -1,34 +1,45 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minitalk.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cberganz <cberganz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/27 19:39:20 by cberganz          #+#    #+#             */
+/*   Updated: 2022/01/27 20:39:01 by cberganz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINITALK_H
 # define MINITALK_H
 
 # include "../libft/include/libft.h"
 # include <signal.h>
-# include <stdlib.h>
-# include <unistd.h>
 # include <stdint.h>
-# include <limits.h>
 
-typedef struct	s_send
-{
-	int			pid;
-	char		*str;
-}	t_send;
+# define TRUE 1
+# define FALSE 0
+# define SUCCESS 0
+# define ERROR 1
+# define BIT_0 SIGUSR1
+# define BIT_1 SIGUSR2
+# define CONFIRM SIGUSR2
+# define GO_TO_NEXT_CHAR SIGUSR1
+# define END_OF_MESSAGE SIGUSR2
 
-typedef struct	s_receive
+typedef struct s_talk
 {
 	int			sig;
-	uint8_t		bit;
+	int			server_pid;
+	int			client_pid;
+	uint8_t		confirm;
 	char		c;
 	char		*str;
-}	t_receive;
+}	t_talk;
 
-void			send_bit(int pid, uint8_t bit);
-void			send_char(int pid, char c);
-void			send_message(t_send send);
-uint8_t			read_bit(int sig);
-uint8_t			receive_char(t_receive *r);
-void			receive_str(int sig);
-void			ft_join_free(t_receive *r);
+void			ft_join_free(t_talk *talk);
 void			show_pid(void);
+void			wait_and_execute(int sig, t_talk *talk, void (*ft)(int));
+uint8_t			pid_is_not_natural(char *s);
 
 #endif

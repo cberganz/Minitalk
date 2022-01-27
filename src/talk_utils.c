@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   talk_utils_bonus.c                                 :+:      :+:    :+:   */
+/*   talk_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cberganz <cberganz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 13:06:59 by cberganz          #+#    #+#             */
-/*   Updated: 2022/01/27 20:38:45 by cberganz         ###   ########.fr       */
+/*   Updated: 2022/01/27 20:38:49 by cberganz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minitalk_bonus.h"
+#include "../include/minitalk.h"
 
 void	wait_and_execute(int sig, t_talk *talk, void (*ft)(int))
 {

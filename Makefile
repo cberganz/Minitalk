@@ -25,11 +25,10 @@ CC				= clang
 CFLAGS			= -Wall -Wextra -Werror
 
 SRC_S			= server.c			\
-				  receive.c			\
-				  utils.c
+				  talk_utils.c
 
 SRC_C			= client.c			\
-				  send.c
+				  talk_utils.c
 
 SRC_S_BONUS		= server_bonus.c	\
 				  talk_utils_bonus.c
@@ -42,7 +41,7 @@ SRC_SERVER		= $(addprefix $(SRC_DIR), $(SRC_S))
 SRC_CLIENT		= $(addprefix $(SRC_DIR), $(SRC_C))
 
 OBJ_DIR			= objs/
-OBJ_DIRS		= $(sort $(dir $(OBJ_SERVER)$(OBJ_CLIENT)))
+OBJ_DIRS		= objs/#$(sort $(dir $(OBJ_SERVER)$(OBJ_CLIENT)))
 OBJ_S			= $(SRC_S:.c=.o)
 OBJ_C			= $(SRC_C:.c=.o)
 OBJ_SERVER		= $(addprefix $(OBJ_DIR), $(OBJ_S))
@@ -53,7 +52,7 @@ SRC_BONUS_SERVER= $(addprefix $(SRC_BONUS_DIR), $(SRC_S_BONUS))
 SRC_BONUS_CLIENT= $(addprefix $(SRC_BONUS_DIR), $(SRC_C_BONUS))
 
 OBJ_BONUS_DIR	= objs_bonus/
-OBJ_BONUS_DIRS	= $(sort $(dir $(OBJ_BONUS_SERVER)$(OBJ_BONUS_CLIENT)))
+OBJ_BONUS_DIRS	= objs_bonus/#$(sort $(dir $(OBJ_BONUS_SERVER)$(OBJ_BONUS_CLIENT)))
 OBJ_S_BONUS		= $(SRC_S_BONUS:.c=.o)
 OBJ_C_BONUS		= $(SRC_C_BONUS:.c=.o)
 OBJ_BONUS_SERVER= $(addprefix $(OBJ_BONUS_DIR), $(OBJ_S_BONUS))
@@ -63,21 +62,21 @@ all: $(NAME_SERVER) $(NAME_CLIENT)
 
 $(NAME_SERVER): $(OBJ_SERVER)
 	@make -sC ./libft/
-	$(CC) $(CFLAGS) -L./libft $(OBJ_SERVER) -lft -o $(NAME_SERVER) -g3
+	$(CC) $(CFLAGS) -L./libft $(OBJ_SERVER) -lft -o $(NAME_SERVER)
 
 $(NAME_CLIENT): $(OBJ_CLIENT)
 	@make -sC ./libft/
-	$(CC) $(CFLAGS) -L./libft $(OBJ_CLIENT) -lft -o $(NAME_CLIENT) -g3
+	$(CC) $(CFLAGS) -L./libft $(OBJ_CLIENT) -lft -o $(NAME_CLIENT)
 
 bonus: $(NAME_SERVER_B) $(NAME_CLIENT_B)
 
 $(NAME_SERVER_B): $(OBJ_BONUS_SERVER)
 	@make -sC ./libft/
-	$(CC) $(CFLAGS) -L./libft $(OBJ_BONUS_SERVER) -lft -o $(NAME_SERVER_B) -g3
+	$(CC) $(CFLAGS) -L./libft $(OBJ_BONUS_SERVER) -lft -o $(NAME_SERVER_B)
 
 $(NAME_CLIENT_B): $(OBJ_BONUS_CLIENT)
 	@make -sC ./libft/
-	$(CC) $(CFLAGS) -L./libft $(OBJ_BONUS_CLIENT) -lft -o $(NAME_CLIENT_B) -g3
+	$(CC) $(CFLAGS) -L./libft $(OBJ_BONUS_CLIENT) -lft -o $(NAME_CLIENT_B)
 
 $(OBJ_DIRS):
 	mkdir -p $@
@@ -89,10 +88,10 @@ $(OBJ_SERVER): | $(OBJ_DIRS)
 $(OBJ_BONUS_SERVER): | $(OBJ_BONUS_DIRS)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
-	$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $@ -g3
+	$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $@
 
 $(OBJ_BONUS_DIR)%.o: $(SRC_BONUS_DIR)%.c $(HEADER)
-	$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $@ -g3
+	$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $@
 
 clean:
 	@make clean -sC ./libft/
